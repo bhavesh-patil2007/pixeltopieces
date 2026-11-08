@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { searchCatalog } from "@/lib/catalog-search.mjs";
 import { categoriesData } from "@/lib/categories";
@@ -16,7 +16,7 @@ export default function Topbar() {
   );
   const hasQuery = query.trim().length > 0;
 
-  function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (results[0]) {
       router.push(results[0].href);

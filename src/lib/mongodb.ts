@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, { type Mongoose } from "mongoose";
 
 type MongooseCache = {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
+  conn: Mongoose | null;
+  promise: Promise<Mongoose> | null;
 };
 
 const globalForMongoose = globalThis as typeof globalThis & {

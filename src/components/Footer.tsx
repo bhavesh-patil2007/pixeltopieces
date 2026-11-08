@@ -27,9 +27,9 @@ export default function Footer() {
           <h4 className="footer-heading">Products</h4>
           <ul className="footer-list">
             <li><Link href="/category/visiting-cards">Visiting Cards</Link></li>
-            <li><Link href="/category/custom-polo-t-shirts">Corporate Apparel</Link></li>
+            <li><Link href="/category/clothing-caps-bags">Corporate Apparel</Link></li>
             <li><Link href="/category/signs-posters-marketing-materials">Marketing Materials</Link></li>
-            <li><Link href="/category/photo-gifts">Photo Gifts</Link></li>
+            <li><Link href="/category/mugs-albums-gifts">Photo Gifts</Link></li>
             <li><Link href="/category/labels-stickers-packaging">Packaging</Link></li>
           </ul>
         </div>

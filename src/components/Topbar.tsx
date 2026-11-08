@@ -100,12 +100,10 @@ export default function Topbar() {
     >
       <div className="search-bar" style={{ flex: 1, maxWidth: "600px", position: "relative" }}>
         <form role="search" onSubmit={handleSearchSubmit}>
-          <label htmlFor="catalog-search" className="sr-only">
-            Search products and categories
-          </label>
           <input
             id="catalog-search"
             type="search"
+            aria-label="Search products and categories"
             placeholder="Search products and categories"
             className="form-input"
             value={query}

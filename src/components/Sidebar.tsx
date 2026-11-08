@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import { useState } from 'react';
-import { categoriesData } from '@/lib/categories';
+import { categoriesData, slugifyCategory } from '@/lib/categories';
 
 export default function Sidebar() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -24,7 +24,7 @@ export default function Sidebar() {
                 className="sidebar-item" 
                 onMouseEnter={() => setActiveCategory(cat.name)}
               >
-                <Link href={`/category/${cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className={`sidebar-link ${activeCategory === cat.name ? 'active' : ''}`}>
+                <Link href={`/category/${slugifyCategory(cat.name)}`} className={`sidebar-link ${activeCategory === cat.name ? 'active' : ''}`}>
                   {cat.name}
                 </Link>
               </li>
@@ -63,7 +63,7 @@ export default function Sidebar() {
             ))}
           </div>
           <div className="mega-menu-footer">
-            <Link href={`/category/${hoveredData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} style={{fontWeight: 700, color: 'var(--primary-color)'}}>
+            <Link href={`/category/${slugifyCategory(hoveredData.name)}`} style={{fontWeight: 700, color: 'var(--primary-color)'}}>
               See All {hoveredData.name}
             </Link>
           </div>

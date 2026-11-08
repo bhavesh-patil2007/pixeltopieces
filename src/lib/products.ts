@@ -1,13 +1,24 @@
-export const categoriesList = [
-  { name: "Visiting Cards", image: "https://m.media-amazon.com/images/I/51AAkq0aAHL._AC_UF1000,1000_QL80_.jpg" },
-  { name: "Custom Polo T-shirts", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80" },
-  { name: "Custom Dress Shirts", image: "https://deq64r0ss2hgl.cloudfront.net/images/opt/products_gallery_images/oxford-polycotton-shirt-60432152039260.jpg?v=6294" },
-  { name: "Custom T-shirts", image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=500&q=80" },
-  { name: "Custom Caps", image: "/caps.png" },
-  { name: "Signs, Posters & Marketing Materials", image: "https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=500&q=80" },
-  { name: "Custom Stamps & Ink", image: "https://printo-s3.dietpixels.net/Soldout/Stamps/Self-ink-Rubber-Stamps_1775464218.jpg" },
-  { name: "Photo Gifts", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80" },
-];
+import { categoriesData, slugifyCategory } from "@/lib/categories";
+
+const categoryImages: Record<string, string> = {
+  "Visiting Cards": "https://m.media-amazon.com/images/I/51AAkq0aAHL._AC_UF1000,1000_QL80_.jpg",
+  "Stationery, Letterheads & Notebooks": "/letterhead.png",
+  "Stamps and Ink": "https://printo-s3.dietpixels.net/Soldout/Stamps/Self-ink-Rubber-Stamps_1775464218.jpg",
+  "Signs, Posters & Marketing Materials": "https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=500&q=80",
+  "Labels, Stickers & Packaging": "/sticker.png",
+  "Clothing, Caps & Bags": "/caps.png",
+  "Mugs, Albums & Gifts": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80",
+  "Umbrellas & Rainwear": "https://images.unsplash.com/photo-1511497584788-876760111969?w=500&q=80",
+  "Drinkware": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&q=80",
+  "Custom Polo T-shirts": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80",
+  "Custom T-Shirts": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=500&q=80",
+};
+
+export const categoriesList = categoriesData.map((category) => ({
+  name: category.name,
+  slug: slugifyCategory(category.name),
+  image: categoryImages[category.name] ?? "/file.svg",
+}));
 
 export const popularProducts = [
   { name: "Standard Visiting Cards", badge: "", image: "/vistingcard1.png", price: 200, unit: "100 units" },

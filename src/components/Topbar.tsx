@@ -1,26 +1,85 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { searchCatalog } from "@/lib/catalog-search.mjs";
 import { categoriesData } from "@/lib/categories";
 import { allProducts } from "@/lib/products";
 
+type SessionUser = {
+  id: string;
+  name: string;
+  email: string;
+};
+
 export default function Topbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [query, setQuery] = useState("");
+  const [user, setUser] = useState<SessionUser | null>(null);
+  const [logoutError, setLogoutError] = useState("");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const results = useMemo(
     () => searchCatalog(query, allProducts, categoriesData, 10),
     [query],
   );
   const hasQuery = query.trim().length > 0;
 
+  useEffect(() => {
+    let isActive = true;
+
+    fetch("/api/auth/session", {
+      credentials: "same-origin",
+      cache: "no-store",
+    })
+      .then(async (response) => {
+        if (!response.ok) return null;
+        const data = await response.json();
+        return data.user as SessionUser | null;
+      })
+      .then((sessionUser) => {
+        if (isActive) setUser(sessionUser);
+      })
+      .catch(() => {
+        if (isActive) setUser(null);
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [pathname]);
+
   function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (results[0]) {
       router.push(results[0].href);
       setQuery("");
+    }
+  }
+
+  async function handleLogout() {
+    setLogoutError("");
+    setIsLoggingOut(true);
+
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin",
+      });
+
+      if (!response.ok) {
+        setLogoutError("Unable to sign out. Please try again.");
+        return;
+      }
+
+      setUser(null);
+      router.refresh();
+    } catch {
+      setLogoutError("A network error occurred while signing out.");
+    } finally {
+      setIsLoggingOut(false);
     }
   }
 
@@ -165,19 +224,56 @@ export default function Topbar() {
           </div>
         </div>
 
-        <Link href="/login" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "inherit" }}>
+        <Link href="/login" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "inherit", textDecoration: "none" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+          </svg>
           My Projects
         </Link>
-        <Link href="/login" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "inherit" }}>
+
+        <Link href="/login" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "inherit", textDecoration: "none" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
           My Favorites
         </Link>
-        <Link href="/login" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "inherit" }}>
-          Sign in
-        </Link>
-        <Link href="/login" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "inherit" }}>
+
+        {user ? (
+          <>
+            <span title={user.email}>Hi, {user.name}</span>
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              style={{ border: 0, background: "transparent", color: "inherit", cursor: "pointer", font: "inherit" }}
+            >
+              {isLoggingOut ? "Signing out..." : "Sign out"}
+            </button>
+          </>
+        ) : (
+          <Link href="/login" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "inherit", textDecoration: "none" }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            Sign in
+          </Link>
+        )}
+
+        <Link href="/login" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "inherit", textDecoration: "none" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
           Cart
         </Link>
       </div>
+      {logoutError && (
+        <p role="alert" style={{ color: "#dc2626", position: "absolute", right: "1rem", top: "100%" }}>
+          {logoutError}
+        </p>
+      )}
     </header>
   );
 }

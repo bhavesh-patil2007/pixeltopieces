@@ -61,9 +61,13 @@ export async function POST(request: NextRequest) {
 
     await connectToDatabase();
     const user = await User.findOne({ email }).select("+passwordHash");
-    const passwordIsValid = user
-      ? await verifyPassword(password, user.passwordHash)
-      : (await hashPassword(password), false);
+    let passwordIsValid = false;
+    if (user) {
+      passwordIsValid = await verifyPassword(password, user.passwordHash);
+    } else {
+      // Keep the missing-user path close to the password-verification cost.
+      await hashPassword(password);
+    }
 
     if (!user || !passwordIsValid) {
       return NextResponse.json(
@@ -83,7 +87,7 @@ export async function POST(request: NextRequest) {
     });
 
     return attachSessionCookie(response, session);
-  } catch (error) {
+  } catch {
     console.error("Login request failed.");
     return NextResponse.json(
       { error: "Unable to sign in right now. Please try again." },

@@ -1,3 +1,5 @@
+import { slugifyCategoryName } from "@/lib/category-slugs.mjs";
+
 export const categoriesData = [
   {
     name: "Visiting Cards",
@@ -218,3 +220,14 @@ export const categoriesData = [
     ]
   }
 ];
+
+
+/** Return the canonical slug for a category display name. */
+export function slugifyCategory(name: string): string {
+  return slugifyCategoryName(name);
+}
+
+/** Resolve only categories explicitly present in the canonical catalog. */
+export function getCategoryBySlug(slug: string) {
+  return categoriesData.find((category) => slugifyCategory(category.name) === slug);
+}

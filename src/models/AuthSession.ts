@@ -6,7 +6,6 @@ const AuthSessionSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      index: true,
     },
     userId: {
       type: Schema.Types.ObjectId,

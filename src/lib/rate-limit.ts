@@ -33,11 +33,17 @@ export async function checkRateLimit(
               1,
             ],
           },
-          expiresAt,
+          expiresAt: {
+            $cond: [
+              { $gt: ["$expiresAt", now] },
+              "$expiresAt",
+              expiresAt,
+            ],
+          },
         },
       },
     ],
-    { upsert: true, new: true },
+    { upsert: true, returnDocument: "after", updatePipeline: true },
   );
 
   const attempts = record?.attempts ?? 1;

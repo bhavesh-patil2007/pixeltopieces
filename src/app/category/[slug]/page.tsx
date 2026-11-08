@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCategoryBySlug, slugifyCategory } from "@/lib/categories";
+import { getCategoryBySlug } from "@/lib/categories";
+import { slugifyCatalogName } from "@/lib/catalog-search.mjs";
 
 export default async function CategoryPage({
   params,
@@ -82,7 +83,7 @@ export default async function CategoryPage({
               {sub.items.map((item) => (
                 <li key={item.name}>
                   <Link
-                    href={`/product/${slugifyCategory(item.name)}`}
+                    href={`/product/${slugifyCatalogName(item.name)}`}
                     style={{
                       color: "var(--text-dark)",
                       fontWeight: 600,

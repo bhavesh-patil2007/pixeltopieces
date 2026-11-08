@@ -1,7 +1,6 @@
 import Link from "next/link";
 import TiltCard from "@/components/TiltCard";
 import { categoriesList as categories, popularProducts, trendingProducts } from "@/lib/products";
-import { slugifyCategory } from "@/lib/categories";
 
 export default function Home() {
 
@@ -38,7 +37,7 @@ export default function Home() {
           <div className="categories-wrapper">
             <div className="categories-scroll">
               {categories.map((cat, idx) => (
-                <Link href={`/category/${slugifyCategory(cat.name)}`} className="category-card" key={idx}>
+                <Link href={`/category/${cat.slug}`} className="category-card" key={idx}>
                   <div className="category-img" style={{ backgroundImage: `url(${cat.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
                   <div className="category-title">{cat.name}</div>
                 </Link>

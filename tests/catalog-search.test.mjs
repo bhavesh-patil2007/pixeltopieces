@@ -57,3 +57,9 @@ test("slug generation removes punctuation and collapses separators", () => {
     "stationery-letterheads-notebooks",
   );
 });
+
+
+test("matches accented catalog names without requiring accents in the query", () => {
+  const results = searchCatalog("cafe", [{ name: "Café Mugs" }], []);
+  assert.equal(results[0]?.href, "/product/cafe-mugs");
+});

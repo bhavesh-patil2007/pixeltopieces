@@ -4,11 +4,11 @@
  */
 export function normalizeCatalogText(value) {
   return String(value ?? "")
-    .normalize("NFKD")
-    .replace(/[\\u0300-\\u036f]/g, "")
     .trim()
     .toLocaleLowerCase()
-    .replace(/\\s+/g, " ");
+    .split(" ")
+    .filter(Boolean)
+    .join(" ");
 }
 
 /**

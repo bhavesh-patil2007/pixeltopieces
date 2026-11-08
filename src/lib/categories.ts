@@ -1,3 +1,5 @@
+import { slugifyCatalogName } from "./catalog-search.mjs";
+
 export const categoriesData = [
   {
     name: "Visiting Cards",
@@ -224,13 +226,7 @@ export const categoriesData = [
  * Creates the canonical URL slug used by every category entry point.
  */
 export function slugifyCategory(name: string): string {
-  return name
-    .normalize("NFKD")
-    .replace(/[\\u0300-\\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+  return slugifyCatalogName(name);
 }
 
 export function getCategoryBySlug(slug: string) {
